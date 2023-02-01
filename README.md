@@ -1,2 +1,2 @@
 # UniversalModManager
-An app for managing Minecraft Mods
+An App for managing Minecraft Mods
