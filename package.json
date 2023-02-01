@@ -1,0 +1,19 @@
+{
+  "name": "universalmodmanager",
+  "version": "1.0.0",
+  "description": "An App for managing Minecraft Mods",
+  "main": "main.js",
+  "scripts": {
+    "test": "testcmd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrStupsi/UniversalModManager.git"
+  },
+  "author": "MrStupsi",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/MrStupsi/UniversalModManager/issues"
+  },
+  "homepage": "https://github.com/MrStupsi/UniversalModManager"
+}
