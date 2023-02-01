@@ -4,7 +4,7 @@
   "description": "An App for managing Minecraft Mods",
   "main": "main.js",
   "scripts": {
-    "test": "testcmd"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/MrStupsi/UniversalModManager/issues"
   },
-  "homepage": "https://github.com/MrStupsi/UniversalModManager"
+  "homepage": "https://github.com/MrStupsi/UniversalModManager",
+  "dependencies": {
+    "electron": "^22.1.0"
+  }
 }
