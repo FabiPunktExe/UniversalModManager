@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
+const { join } = require("path");
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -7,13 +8,13 @@ function createWindow() {
         }
     });
     mainWindow.maximize();
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile(join(__dirname, "index.html"));
 }
 
 function run() {
     createWindow();
 }
 
-app.on('ready', run);
-app.on('window-all-closed', app.quit);
-app.on('activate', createWindow);
+app.on("ready", run);
+app.on("window-all-closed", app.quit);
+app.on("activate", createWindow);
