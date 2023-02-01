@@ -2,7 +2,7 @@
   "name": "universalmodmanager",
   "version": "1.0.0",
   "description": "An App for managing Minecraft Mods",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron ."
   },
