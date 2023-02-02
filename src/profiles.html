@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>UniversalModManager</title>
+        <style>
+            body {
+                background-color: #222222;
+                font-family: Arial;
+                display: flex;
+                margin: 0;
+            }
+            #profile-div {
+                background-color: #333333;
+                border: #000000 solid 3px;
+                border-radius: 10px;
+                width: 40%;
+                height: 96%;
+                left: 30%;
+                top: 2%;
+                position: fixed;
+            }
+            .profile-text {
+                text-align: center;
+                font-size: 100px;
+                width: 20%;
+                height: 10%;
+                left: 40%;
+                top: -4%;
+                position: fixed;
+            }
+            #play {
+                background-color: #00bb22;
+                border: #000000 solid 5px;
+                border-radius: 25px;
+                font-weight: bold;
+                font-size: 50px;
+                transition: 0.2s;
+                width: 20%;
+                height: 10%;
+                left: 40%;
+                top: 38%;
+                position: fixed;
+            }
+            #play:hover {
+                font-size: 60px;
+            }
+            #play:active {
+                background-color: #009900;
+            }
+        </style>
+    </head>
+    <body>
+        <p class="profile-text">UMM</p>
+        <div id="profile-div">
+            <div id="new-button"><button>New Profile</button></div>
+        </div>
+    </body>
+</html>
+<script>
+    function addProfile(name, description, id) {
+        const newButton = document.getElementById("new-button");
+        const profileDiv = document.getElementById("profile-div");
+        const profile = document.createElement("div");
+        name = document.createTextNode(name);
+        name.className = "profile-name";
+        profile.appendChild(name);
+        description = document.createTextNode(description);
+        description.className = "profile-description";
+        profile.appendChild(description);
+        const playButton = document.createElement("button");
+        playButton.id = "play:" + id;
+        playButton.onclick = () => electronAPI.send("play", id);
+        description.className = "profile-play";
+        console.log(profile);
+        console.log(newButton);
+        profileDiv.insertBefore(profile, newButton);
+    }
+    electronAPI.addCallback("addProfile", (event, data) => {
+        addProfile(data.name, data.description, data.id);
+    });
+</script>
