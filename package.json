@@ -18,6 +18,9 @@
   "homepage": "https://github.com/MrStupsi/UniversalModManager",
   "dependencies": {
     "electron": "^22.1.0",
-    "path": "^0.12.7"
+    "minecraft-launcher-core": "^3.16.18",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "sync-request": "^6.1.0"
   }
 }
