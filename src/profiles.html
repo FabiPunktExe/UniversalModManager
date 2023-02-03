@@ -5,78 +5,145 @@
         <title>UniversalModManager</title>
         <style>
             body {
-                background-color: #222222;
                 font-family: Arial;
-                display: flex;
                 margin: 0;
+                background-color: #222222;
             }
             #profile-div {
+                display: block;
+                position: absolute;
+                width: 40%;
+                height: fit-content;
+                left: 30%;
+                top: 2%;
                 background-color: #333333;
                 border: #000000 solid 3px;
                 border-radius: 10px;
-                width: 40%;
-                height: 96%;
-                left: 30%;
-                top: 2%;
-                position: fixed;
+                scrollbar-color: #222222;
+                padding: 10px;
             }
-            .profile-text {
-                text-align: center;
-                font-size: 100px;
-                width: 20%;
-                height: 10%;
-                left: 40%;
-                top: -4%;
-                position: fixed;
+            .profile-div {
+                display: block;
+                position: relative;
+                width: auto;
+                height: 95px;
+                border: #000000 solid 2px;
+                border-radius: 5px;
+                margin-bottom: 10px;
             }
-            #play {
-                background-color: #00bb22;
-                border: #000000 solid 5px;
-                border-radius: 25px;
-                font-weight: bold;
-                font-size: 50px;
+            .profile-name {
+                position: relative;
+                color: #ffffff;
+                font-size: 30px;
+                text-align: left;
+            }
+            .profile-description {
+                position: relative;
+                color: #999999;
+                font-size: 15px;
+                text-align: justify;
+            }
+            .profile-version {
+                position: relative;
+                color: #ffffff;
+                font-size: 20px;
+                text-align: left;
+            }
+            .profile-play {
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                width: 120px;
+                height: 40px;
+                border: #000000 solid 4px;
+                border-radius: 7px;
+                background-color: #22dd44;
                 transition: 0.2s;
-                width: 20%;
-                height: 10%;
-                left: 40%;
-                top: 38%;
-                position: fixed;
             }
-            #play:hover {
-                font-size: 60px;
+            .profile-play:hover {
+                background-color: #00bb22;
             }
-            #play:active {
+            .profile-play:active {
                 background-color: #009900;
+            }
+            .profile-edit {
+                position: absolute;
+                right: 5px;
+                top: 50px;
+                width: 120px;
+                height: 40px;
+                border: #000000 solid 4px;
+                border-radius: 7px;
+                background-color: #aaaaaa;
+                transition: 0.2s;
+            }
+            .profile-edit:hover {
+                background-color: #888888;
+            }
+            .profile-edit:active {
+                background-color: #666666;
+            }
+            #new-button {
+                position: relative;
+                width: 120px;
+                height: 40px;
+                border: #000000 solid 4px;
+                border-radius: 7px;
+                background-color: #aaaaaa;
+                transition: 0.2s;
+            }
+            #new-button:hover {
+                background-color: #888888;
+            }
+            #new-button:active {
+                background-color: #666666;
             }
         </style>
     </head>
     <body>
-        <p class="profile-text">UMM</p>
         <div id="profile-div">
-            <div id="new-button"><button>New Profile</button></div>
+            <div id="new-button-div"><button id="new-button">New Profile</button></div>
         </div>
     </body>
 </html>
 <script>
-    function addProfile(name, description, id) {
-        const newButton = document.getElementById("new-button");
-        const profileDiv = document.getElementById("profile-div");
-        const profile = document.createElement("div");
-        name = document.createTextNode(name);
-        name.className = "profile-name";
-        profile.appendChild(name);
-        description = document.createTextNode(description);
-        description.className = "profile-description";
-        profile.appendChild(description);
-        const playButton = document.createElement("button");
-        playButton.id = "play:" + id;
-        playButton.onclick = () => electronAPI.send("play", id);
-        description.className = "profile-play";
-        console.log(profile);
-        console.log(newButton);
-        profileDiv.insertBefore(profile, newButton);
+    function addProfile(data) {
+        const newButton = document.getElementById("new-button-div")
+        newButton.onclick = () => electronAPI.send("new")
+
+        const profileDiv = document.getElementById("profile-div")
+
+        const profile = document.createElement("div")
+        profile.className = "profile-div"
+
+        const nameDiv = document.createElement("div")
+        nameDiv.innerText = data.name
+        nameDiv.className = "profile-name"
+        profile.appendChild(nameDiv)
+
+        const versionDiv = document.createElement("div")
+        versionDiv.innerText = data.version
+        versionDiv.className = "profile-version"
+        profile.appendChild(versionDiv)
+
+        const descriptionDiv = document.createElement("div")
+        descriptionDiv.innerText = data.description
+        descriptionDiv.className = "profile-description"
+        profile.appendChild(descriptionDiv)
+
+        const playButton = document.createElement("button")
+        playButton.innerText = "Play"
+        playButton.onclick = () => electronAPI.send("play", data.id)
+        playButton.className = "profile-play"
+        profile.appendChild(playButton)
+
+        const editButton = document.createElement("button")
+        editButton.innerText = "Edit"
+        editButton.onclick = () => electronAPI.send("edit", data.id)
+        editButton.className = "profile-edit"
+        profile.appendChild(editButton)
+        
+        profileDiv.insertBefore(profile, newButton)
     }
-    electronAPI.addCallback("addProfile", (event, data) => {
-        addProfile(data.name, data.description, data.id);
-    });
+    electronAPI.addCallback("addProfile", (event, data) => addProfile(data))
 </script>
