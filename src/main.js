@@ -2,6 +2,10 @@ const { assert } = require("console")
 const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron")
 const { readFileSync, writeFileSync } = require("fs")
 const { join } = require("path")
+const versions = []
+const versionsLib = require("./versions")
+versionsLib.loadVersions(versions)
+const mcutil = require("./mcutil")
 
 var window = null
 
@@ -24,8 +28,13 @@ function createWindow() {
     window.maximize()
     window.loadFile(join(__dirname, "profiles.html"))
     const profiles = getProfiles();
-    profiles.forEach(profile => window.webContents.send("addProfile", profile))
-    console.log(profiles)
+    profiles.forEach(profile => {
+        profile.version = versions.find(ver => ver.id == profile.version)
+        if (profile.version !== undefined) {
+            profile.version = profile.version.name
+            window.webContents.send("addProfile", profile)
+        }
+    })
 }
 
 function play(event, data) {
