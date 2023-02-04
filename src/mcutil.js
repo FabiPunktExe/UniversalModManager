@@ -1,4 +1,4 @@
-const { existsSync, mkdirSync } = require("fs")
+const { existsSync, mkdirSync, readFile, readFileSync } = require("fs")
 const { homedir } = require("os")
 const { join } = require("path")
 
@@ -23,3 +23,4 @@ module.exports.versiondir = () => {
 	if (!existsSync(path)) mkdirSync(path, {recursive: true})
 	return path
 }
+

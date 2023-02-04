@@ -30,6 +30,7 @@ function registerVanillaVersion(versions, version) {
     versions.push({
         id: "vanilla-" + version,
         name: "Minecraft " + version,
+        mcid: version,
         isInstalled: () => existsSync(join(versiondir(), version)),
         install: (callback) => {
             getVanillaJson(version, json => writeJson(json, json.id, callback))
