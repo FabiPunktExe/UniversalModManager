@@ -41,7 +41,6 @@ function registerForgeVersion(versions, manifest, version) {
             isInstalled: () => existsSync(join(versiondir(), mcid)),
             install: callback => {
                 downloadForgeInstaller(version, forgeVersion, (installer) => {
-                    console.log(installer)
                     spawn("java", [
                         "-cp",
                         installer + ";" + join(__dirname, "ForgeInstallerLauncher.jar"),
