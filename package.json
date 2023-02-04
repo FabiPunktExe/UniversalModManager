@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MrStupsi/UniversalModManager",
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "electron": "^22.1.0",
     "minecraft-launcher-core": "^3.16.18",
     "path": "^0.12.7",

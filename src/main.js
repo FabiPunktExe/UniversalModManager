@@ -17,6 +17,8 @@ function getProfiles() {
     }
 }
 
+const profiles = getProfiles();
+
 function createWindow() {
     window = new BrowserWindow({
         webPreferences: {
@@ -27,19 +29,32 @@ function createWindow() {
     window.setMenuBarVisibility(true)
     window.maximize()
     window.loadFile(join(__dirname, "profiles.html"))
-    const profiles = getProfiles();
     profiles.forEach(profile => {
-        profile.version = versions.find(ver => ver.id == profile.version)
-        if (profile.version !== undefined) {
-            profile.version = profile.version.name
-            window.webContents.send("addProfile", profile)
+        const version = versions.find(ver => ver.id == profile.version)
+        if (version) {
+            window.webContents.send("addProfile", {
+                id: profile.id,
+                name: profile.name,
+                description: profile.description,
+                version: version.name
+            })
         }
     })
 }
 
-function play(event, data) {
+function play(event, id) {
     assert(window != null)
-    console.log("play: " + data)
+    const profile = profiles.find(profile => profile.id == id)
+    if (profile) {
+        const version = versions.find(ver => ver.id == profile.version)
+        if (version) {
+            const callback = () => {
+                window.webContents.send("playButton", id, true)
+            }
+            if (version.isInstalled()) callback()
+            else version.install(callback)
+        }
+    }
 }
 
 function run() {

@@ -33,24 +33,32 @@
             }
             .profile-name {
                 position: relative;
+                left: 5px;
+                top: 5px;
                 color: #ffffff;
                 font-size: 30px;
                 text-align: left;
             }
-            .profile-description {
-                position: relative;
-                color: #999999;
-                font-size: 15px;
-                text-align: justify;
-            }
             .profile-version {
                 position: relative;
+                left: 5px;
+                margin-top: 5px;
                 color: #ffffff;
                 font-size: 20px;
                 text-align: left;
             }
+            .profile-description {
+                position: relative;
+                left: 5px;
+                margin-top: 0px;
+                color: #999999;
+                font-size: 15px;
+                text-align: justify;
+                width: calc(100% - 15px - 120px)
+            }
             .profile-play {
                 position: absolute;
+                align-content: center;
                 right: 5px;
                 top: 5px;
                 width: 120px;
@@ -65,6 +73,9 @@
             }
             .profile-play:active {
                 background-color: #009900;
+            }
+            .profile-play:disabled {
+                background-color: #aaaaaa;
             }
             .profile-edit {
                 position: absolute;
@@ -98,6 +109,53 @@
             #new-button:active {
                 background-color: #666666;
             }
+            .loading-dot {
+                position: relative;
+                display: inline-block;
+                visibility: hidden;
+                width: 10px;
+                height: 10px;
+                border-radius: 5px;
+                background-color: rgba(255, 255, 255, 0.3);
+                animation: loading-dot 1s infinite linear;
+                animation-delay: 0.5s;
+            }
+            .loading-dot::before {
+                position: relative;
+                display: inline-block;
+                visibility: hidden;
+                width: 10px;
+                height: 10px;
+                border-radius: 5px;
+                background-color: rgba(255, 255, 255, 0.3);
+                animation: loading-dot 1s infinite linear;
+                animation-delay: 0.0s;
+            }
+            .loading-dot::after {
+                position: relative;
+                display: inline-block;
+                visibility: hidden;
+                width: 10px;
+                height: 10px;
+                border-radius: 5px;
+                background-color: rgba(255, 255, 255, 0.3);
+                animation: loading-dot 1s infinite linear;
+                animation-delay: 1.0s;
+            }
+            @keyframes loading-dot {
+                0% {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+                30% {
+                    background-color: rgba(255, 255, 255, 1.0);
+                }
+                60% {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+                100% {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+            }
         </style>
     </head>
     <body>
@@ -107,6 +165,14 @@
     </body>
 </html>
 <script>
+    function createDots(target) {
+        for (let i = 0; i < 1; i++) {
+            const dot = document.createElement("div")
+            dot.className = "loading-dot"
+            target.appendChild(dot)
+        }
+    }
+
     function addProfile(data) {
         const newButton = document.getElementById("new-button-div")
         newButton.onclick = () => electronAPI.send("new")
@@ -133,8 +199,13 @@
 
         const playButton = document.createElement("button")
         playButton.innerText = "Play"
-        playButton.onclick = () => electronAPI.send("play", data.id)
+        playButton.onclick = () => {
+            pressPlayButton(data.id, false)
+            electronAPI.send("play", data.id);
+        }
         playButton.className = "profile-play"
+        playButton.id = "play:" + data.id
+        createDots(playButton)
         profile.appendChild(playButton)
 
         const editButton = document.createElement("button")
@@ -145,5 +216,12 @@
         
         profileDiv.insertBefore(profile, newButton)
     }
+
+    function pressPlayButton(id, active) {
+        const button = document.getElementById("play:" + id)
+        button.disabled = !active
+    }
+
     electronAPI.addCallback("addProfile", (event, data) => addProfile(data))
+    electronAPI.addCallback("playButton", (event, id, active) => pressPlayButton(id, active))
 </script>
