@@ -1,0 +1,145 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #222222;
+}
+#profiles-page {
+    visibility: hidden;
+}
+#profile-div {
+    display: block;
+    position: absolute;
+    width: 40%;
+    height: fit-content;
+    left: 30%;
+    top: 2%;
+    background-color: #333333;
+    border: #000000 solid 3px;
+    border-radius: 10px;
+    scrollbar-color: #222222;
+    padding: 10px;
+}
+.profile-div {
+    display: block;
+    position: relative;
+    width: auto;
+    height: 95px;
+    border: #000000 solid 2px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.profile-name {
+    position: relative;
+    left: 5px;
+    top: 5px;
+    color: #ffffff;
+    font-size: 30px;
+    text-align: left;
+}
+.profile-version {
+    position: relative;
+    left: 5px;
+    margin-top: 5px;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: left;
+}
+.profile-description {
+    position: relative;
+    left: 5px;
+    margin-top: 0px;
+    color: #999999;
+    font-size: 15px;
+    text-align: justify;
+    width: calc(100% - 15px - 120px)
+}
+.profile-play {
+    position: absolute;
+    align-content: center;
+    right: 5px;
+    top: 5px;
+    width: 120px;
+    height: 40px;
+    border: #000000 solid 4px;
+    border-radius: 7px;
+    background-color: #22dd44;
+    transition: 0.2s;
+}
+.profile-play:hover {
+    background-color: #00bb22;
+}
+.profile-play:active {
+    background-color: #009900;
+}
+.profile-play:disabled {
+    background-color: #aaaaaa;
+}
+.profile-edit {
+    position: absolute;
+    right: 5px;
+    top: 50px;
+    width: 120px;
+    height: 40px;
+    border: #000000 solid 4px;
+    border-radius: 7px;
+    background-color: #aaaaaa;
+    transition: 0.2s;
+}
+.profile-edit:hover {
+    background-color: #888888;
+}
+.profile-edit:active {
+    background-color: #666666;
+}
+#new-button {
+    position: relative;
+    width: 120px;
+    height: 40px;
+    border: #000000 solid 4px;
+    border-radius: 7px;
+    background-color: #aaaaaa;
+    transition: 0.2s;
+}
+#new-button:hover {
+    background-color: #888888;
+}
+#new-button:active {
+    background-color: #666666;
+}
+#edit-page {
+    visibility: hidden;
+}
+#mods-list-div {
+    display: block;
+    position: fixed;
+    width: auto;
+    height: auto;
+    left: 0;
+    top: 0;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    margin-left: 2vh;
+    margin-right: 1vh;
+    background-color: #333333;
+    border: #000000 solid 3px;
+    border-radius: 10px;
+    scrollbar-color: #222222;
+    padding: 10px;
+}
+#edit-div {
+    display: block;
+    position: fixed;
+    width: 40vw;
+    height: auto;
+    right: 0;
+    top: 0;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    margin-left: 1vh;
+    margin-right: 2vh;
+    background-color: #333333;
+    border: #000000 solid 3px;
+    border-radius: 10px;
+    scrollbar-color: #222222;
+    padding: 10px;
+}

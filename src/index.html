@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>UniversalModManager</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="profiles-page">
+            <div id="profile-div">
+                <div id="new-button-div"><button id="new-button">New Profile</button></div>
+            </div>
+        </div>
+        <div id="edit-page">
+            <div id="mods-list-div">
+                <input type="text" id="search-mod">
+                <ul id="mods-list">
+                </ul>
+            </div>
+            <div id="edit-div">
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    function loadPage(page) {
+        document.getElementById("profiles-page").style.visibility = page == "profiles" ? "visible" : "hidden"
+        document.getElementById("edit-page").style.visibility = page == "edit" ? "visible" : "hidden"
+    }
+
+    const newButton = document.getElementById("new-button-div")
+    newButton.onclick = () => electronAPI.send("new")
+
+    function addProfile(data) {
+        const profileDiv = document.getElementById("profile-div")
+
+        const profile = document.createElement("div")
+        profile.className = "profile-div"
+
+        const nameDiv = document.createElement("div")
+        nameDiv.innerText = data.name
+        nameDiv.className = "profile-name"
+        profile.appendChild(nameDiv)
+
+        const versionDiv = document.createElement("div")
+        versionDiv.innerText = data.version
+        versionDiv.className = "profile-version"
+        profile.appendChild(versionDiv)
+
+        const descriptionDiv = document.createElement("div")
+        descriptionDiv.innerText = data.description
+        descriptionDiv.className = "profile-description"
+        profile.appendChild(descriptionDiv)
+
+        const playButton = document.createElement("button")
+        playButton.innerText = "Play"
+        playButton.onclick = () => {
+            pressPlayButton(data.id, false)
+            electronAPI.send("play", data.id);
+        }
+        playButton.className = "profile-play"
+        playButton.id = "play:" + data.id
+        profile.appendChild(playButton)
+
+        const editButton = document.createElement("button")
+        editButton.innerText = "Edit"
+        editButton.onclick = () => electronAPI.send("edit", data.id)
+        editButton.className = "profile-edit"
+        profile.appendChild(editButton)
+        
+        profileDiv.insertBefore(profile, newButton)
+    }
+
+    function pressPlayButton(id, active) {
+        const button = document.getElementById("play:" + id)
+        button.disabled = !active
+    }
+
+    function loadMods(mods) {
+        const modList = document.getElementById("mods-list-div")
+        mods.forEach(mod => {
+            const modLi = document.createElement("li")
+            modLi.className = "mods-list-li"
+            modLi.draggable = true
+
+            const modName = document.createElement("div")
+            modName.innerText = mod.name
+            modName.className = "mods-list-li-name"
+            modLi.appendChild(modName)
+
+            modList.appendChild(modLi)
+        });
+    }
+
+    electronAPI.addCallback("page", (event, page) => loadPage(page))
+    electronAPI.addCallback("addProfile", (event, data) => addProfile(data))
+    electronAPI.addCallback("playButton", (event, id, active) => pressPlayButton(id, active))
+    electronAPI.addCallback("loadMods", (event, mods) => loadMods(mods))
+</script>

@@ -19,8 +19,11 @@
   "dependencies": {
     "adm-zip": "^0.5.10",
     "electron": "^22.1.0",
+    "find-process": "^1.4.7",
+    "kill-process-by-name": "^1.0.5",
     "minecraft-launcher-core": "^3.16.18",
     "path": "^0.12.7",
+    "ps-node": "^0.1.6",
     "request": "^2.88.2",
     "sync-request": "^6.1.0"
   }
