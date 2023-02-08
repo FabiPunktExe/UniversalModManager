@@ -58,6 +58,7 @@ function createWindow() {
     window.setMenuBarVisibility(true)
     window.maximize()
     window.loadFile(join(__dirname, "index.html"))
+    //win.loadFile('index.html')
     return window
 }
 
