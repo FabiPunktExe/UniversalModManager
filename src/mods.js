@@ -32,7 +32,7 @@ module.exports.installMod = (mod, mods, installedMods) => {
     mod = this.getModById(mod, mods)
     if (!mod) return
     mod.dependencies.forEach((dependency) => this.installMod(dependency, mods, installedMods))
-    const modFile = mod.url.substring(mod.url.lastIndexOf("/") + 1)
+    const modFile = mod.id + ".jar"
     if (modFile in installedMods) installedMods.splice(installedMods.indexOf(mod.id))
     else if (existsSync(join(modsdir(), modFile))) return
     else {
