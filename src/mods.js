@@ -29,10 +29,9 @@ module.exports.loadMods = (mods, callback) => {
 }
 
 module.exports.installMod = (mod, mods, installedMods) => {
+    mod = this.getModById(mod, mods)
     if (!mod) return
-    mod.dependencies.forEach((dependency) => {
-        this.installMod(this.getModById(dependency, mods))
-    })
+    mod.dependencies.forEach((dependency) => this.installMod(dependency, mods, installedMods))
     const modFile = mod.url.substring(mod.url.lastIndexOf("/") + 1)
     if (modFile in installedMods) installedMods.splice(installedMods.indexOf(mod.id))
     else if (existsSync(join(modsdir(), modFile))) return
@@ -46,9 +45,6 @@ module.exports.installMod = (mod, mods, installedMods) => {
 
 module.exports.installMods = (profile, mods) => {
     const installedMods = readdirSync(modsdir())
-    profile.mods.forEach((mod) => {
-        mod = this.getModById(mod, mods)
-        this.installMod(mod, mods, this.installMods)
-    })
+    profile.mods.forEach((mod) => this.installMod(mod, mods, installedMods))
     installedMods.forEach(mod => unlinkSync(join(modsdir(), mod)))
 }
