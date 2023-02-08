@@ -1,1 +1,2 @@
+// NAME;ID;URL;VERSION1,VERSION2;DEPENDENCY1,DEPENDENCY2
 StupsiMod;stupsimod-0;http://diruptio.de/stupsimod/download/stupsimod-0.2.5.jar;fabric-1.19.3;
