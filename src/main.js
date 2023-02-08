@@ -48,17 +48,17 @@ function edit(id, window) {
     window.webContents.send("loadMods", mods)
 }
 
-function createWindow() {
+function createWindow(callback) {
     const window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
-            preload: join(__dirname, "preload.js")
+            preload: join(__dirname, "preload.js"),
+            javascript: true
         }
     })
     window.setMenuBarVisibility(true)
     window.maximize()
-    window.loadFile(join(__dirname, "index.html"))
-    return window
+    window.loadFile(join(__dirname, "index.html")).then(() => callback(window))
 }
 
 function loadProfiles() {
@@ -83,23 +83,24 @@ const mods = []
 app.on("ready", () => {
     versionsLib.loadVersions(versions, () => {
         loadMods(mods, () => {
-            const window = createWindow()
-            ipcMain.on("play", (event, id) => play(id, window, mods))
-            ipcMain.on("edit", (event, id) => edit(id, window, mods))
-            window.webContents.send("page", "profiles")
-            profiles.forEach(profile => {
-                const version = versions.find(ver => ver.id == profile.version)
-                if (version) {
-                    window.webContents.send("addProfile", {
-                        id: profile.id,
-                        name: profile.name,
-                        description: profile.description,
-                        version: version.name,
-                        mods: profile.mods
-                    })
-                }
+            createWindow((window) => {
+                ipcMain.on("play", (event, id) => play(id, window, mods))
+                ipcMain.on("edit", (event, id) => edit(id, window, mods))
+                window.webContents.send("page", "profiles")
+                profiles.forEach(profile => {
+                    const version = versions.find(ver => ver.id == profile.version)
+                    if (version) {
+                        window.webContents.send("addProfile", {
+                            id: profile.id,
+                            name: profile.name,
+                            description: profile.description,
+                            version: version.name,
+                            mods: profile.mods
+                        })
+                    }
+                })
+                app.on("window-all-closed", app.quit)
             })
-            app.on("window-all-closed", app.quit)
         })
     })
 })

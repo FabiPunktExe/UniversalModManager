@@ -41,10 +41,5 @@ module.exports.installMods = (profile, mods) => {
             installedMods.splice(installedMods.indexOf(mod.id))
         }
     })
-    installedMods.forEach(mod => {
-        console.log(modsdir())
-        console.log(mod)
-        console.log(join(modsdir(), mod))
-        unlinkSync(join(modsdir(), mod))
-    })
+    installedMods.forEach(mod => unlinkSync(join(modsdir(), mod)))
 }
