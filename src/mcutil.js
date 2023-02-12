@@ -24,3 +24,14 @@ module.exports.versiondir = () => {
 	return path
 }
 
+module.exports.modscache = () => {
+	const path = join(getMinecraftDir(), "UniversalModManager", "cache")
+	if (!existsSync(path)) mkdirSync(path, {recursive: true})
+	return path
+}
+
+module.exports.modsdir = () => {
+	const path = join(getMinecraftDir(), "mods")
+	if (!existsSync(path)) mkdirSync(path, {recursive: true})
+	return path
+}

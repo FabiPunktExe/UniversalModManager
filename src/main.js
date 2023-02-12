@@ -1,13 +1,12 @@
 const { spawnSync } = require("child_process")
-const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron")
+const { app, BrowserWindow, ipcMain } = require("electron")
 const { readFileSync, writeFileSync } = require("fs")
 const { join } = require("path")
-const { get } = require("request")
-const request = require("request")
 const { mcdir } = require("./mcutil")
 const versionsLib = require("./versions")
+const { installMods, loadMods } = require("./mods")
 
-function play(id, window) {
+function play(id, window, mods) {
     const profile = profiles.find(profile => profile.id == id)
     if (profile) {
         const version = versions.find(ver => ver.id == profile.version)
@@ -15,6 +14,7 @@ function play(id, window) {
             const callback = () => window.webContents.send("playButton", id, true)
             if (version.isInstalled()) callback()
             else version.install(callback)
+            installMods(profile, mods)
             const launcherProfiles = JSON.parse(readFileSync(join(mcdir(), "launcher_profiles.json")))
             launcherProfiles.keepLauncherOpen = false
             launcherProfiles.profiles.umm = {
@@ -48,23 +48,29 @@ function edit(id, window) {
     window.webContents.send("loadMods", mods)
 }
 
-function createWindow() {
+function createWindow(callback) {
     const window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
-            preload: join(__dirname, "preload.js")
+            preload: join(__dirname, "preload.js"),
+            javascript: true
         }
     })
     window.setMenuBarVisibility(true)
     window.maximize()
-    window.loadFile(join(__dirname, "index.html"))
-    //win.loadFile('index.html')
-    return window
+    window.loadFile(join(__dirname, "index.html")).then(() => callback(window))
 }
 
 function loadProfiles() {
-    try {return JSON.parse(readFileSync(join(__dirname, "profiles.json")))}
-    catch (e) {
+    try {
+        const profiles = JSON.parse(readFileSync(join(__dirname, "profiles.json")))
+        profiles.filter(profile => "name"        in profile &&
+                                   "description" in profile &&
+                                   "id"          in profile &&
+                                   "version"     in profile &&
+                                   "mods"        in profile)
+        return profiles
+    } catch (e) {
         writeFileSync(join(__dirname, "profiles.json"), "[]")
         return loadProfiles()
     }
@@ -74,48 +80,27 @@ const versions = []
 const profiles = loadProfiles()
 const mods = []
 
-function loadMods(callback) {
-    get("https://mrstupsi.github.io/UniversalModManager/mods.txt", {}, (error, response, body) => {
-        const lines = body.split("\n")
-        lines.forEach(line => {
-            if (!line.startsWith("//")) {
-                const data = line.split(";")
-                mods.push({
-                    name: data[0],
-                    id: data[1],
-                    url: data[2],
-                    versions: data[3] == "" ? [] : data[3].split(","),
-                    dependencies: data[4] == "" ? [] : data[4].split(",")
-                })
-            }
-        })
-        callback()
-    })
-}
-
 app.on("ready", () => {
     versionsLib.loadVersions(versions, () => {
-        loadMods(() => {
-            const window = createWindow()
-            ipcMain.on("play", (event, id) => play(id, window))
-            ipcMain.on("edit", (event, id) => edit(id, window))
-            window.webContents.send("page", "profiles")
-            profiles.forEach(profile => {
-                const version = versions.find(ver => ver.id == profile.version)
-                if (version) {
-                    window.webContents.send("addProfile", {
-                        id: profile.id,
-                        name: profile.name,
-                        description: profile.description,
-                        version: version.name
-                    })
-                }
+        loadMods(mods, () => {
+            createWindow((window) => {
+                ipcMain.on("play", (event, id) => play(id, window, mods))
+                ipcMain.on("edit", (event, id) => edit(id, window, mods))
+                window.webContents.send("page", "profiles")
+                profiles.forEach(profile => {
+                    const version = versions.find(ver => ver.id == profile.version)
+                    if (version) {
+                        window.webContents.send("addProfile", {
+                            id: profile.id,
+                            name: profile.name,
+                            description: profile.description,
+                            version: version.name,
+                            mods: profile.mods
+                        })
+                    }
+                })
+                app.on("window-all-closed", app.quit)
             })
-            app.on("window-all-closed", app.quit)
-            /*app.on('browser-window-focus', function () {shortc
-                globalShortcut.register("CommandOrControl+R", () => {})
-                globalShortcut.register("F5", () => {})
-            })*/
         })
     })
 })
