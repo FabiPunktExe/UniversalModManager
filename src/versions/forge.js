@@ -3,7 +3,7 @@ const { tmpdir } = require("os")
 const { join } = require("path")
 const { get } = require("request")
 const { spawn } = require("child_process")
-const { versiondir, mcdir } = require("./mcutil")
+const { versiondir, mcdir } = require("../mcutil")
 
 function getForgeManifest(callback) {
     get(

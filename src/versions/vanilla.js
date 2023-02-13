@@ -1,7 +1,7 @@
 const { writeFile, existsSync, mkdirSync } = require("fs")
 const { join } = require("path")
 const { get } = require("request")
-const { versiondir } = require("./mcutil")
+const { versiondir } = require("../mcutil")
 
 module.exports.writeJson = (json, version, callback) => {
     const dir = join(versiondir(), version)

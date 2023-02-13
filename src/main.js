@@ -3,7 +3,7 @@ const { app, BrowserWindow, ipcMain } = require("electron")
 const { readFileSync, writeFileSync } = require("fs")
 const { join } = require("path")
 const { mcdir } = require("./mcutil")
-const versionsLib = require("./versions")
+const versionsLib = require("./versions/versions")
 const { installMods, loadMods } = require("./mods")
 
 function play(id, window, mods) {
@@ -52,13 +52,13 @@ function createWindow(callback) {
     const window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
-            preload: join(__dirname, "preload.js"),
+            preload: join(__dirname, "html", "preload.js"),
             javascript: true
         }
     })
     window.setMenuBarVisibility(true)
     window.maximize()
-    window.loadFile(join(__dirname, "index.html")).then(() => callback(window))
+    window.loadFile(join(__dirname, "html", "index.html")).then(() => callback(window))
 }
 
 function loadProfiles() {

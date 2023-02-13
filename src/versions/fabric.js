@@ -1,7 +1,7 @@
 const { existsSync } = require("fs")
 const { get } = require("request")
 const { join } = require("path")
-const { versiondir } = require("./mcutil")
+const { versiondir } = require("../mcutil")
 const { writeJson } = require("./vanilla.js")
 
 function getNewestFabricVersion(callback) {
