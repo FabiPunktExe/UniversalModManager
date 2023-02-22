@@ -1,4 +1,4 @@
-// NAME;ID;URL;VERSION1,VERSION2;DEPENDENCY1,DEPENDENCY2
+// NAME;ID;URL;VERSION1,VERSION2;DEPENDENCY1,DEPENDENCY2;DESCRIPTION;TAG1,TAG2,TAG3
 StupsiMod;stupsimod-0;http://diruptio.de/stupsimod/download/stupsimod-0.2.5.jar;fabric-1.19.3;
 OptiFine;optifine-1.14.4;https://optifine.net/downloadx?f=OptiFine_1.14.4_HD_U_G5.jar&x=73b2705464d3398653afd2cc8e35565b;forge-1.14.4;
 OptiFine;optifine-1.15.2;https://optifine.net/downloadx?f=OptiFine_1.15.2_HD_U_G6.jar&x=73b2705464d3398653afd2cc8e35565b;forge-1.15.2;
