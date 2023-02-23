@@ -1,0 +1,85 @@
+#profiles-page {
+    visibility: hidden;
+}
+.profiles-header {
+    position: absolute;
+    margin: 20px 30% 10px 30%;
+    width: 40%;
+    height: 50px;
+    background: #555555;
+    border: 2px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-radius: 10px;
+    border-bottom-left-radius: 0%;
+    border-bottom-right-radius: 0%;
+}
+.profile-text {
+    color: #ffffff;
+    font-size: 30px;
+    margin: auto;
+    text-align: center;
+}
+#profiles {
+    position: absolute;
+    margin: 70px 30% 10px 30%;
+    padding: 0px 0px 0px 0px;
+    width: 40%;
+    height: calc(100% - 90px);
+    background: #333333;
+    border: 2px solid #000000;
+    border-top: 1px solid #000000;
+    border-radius: 10px;
+    border-top-left-radius: 0%;
+    border-top-right-radius: 0%;
+}
+.profile {
+    position: relative;
+    margin: 10px 10px 0px 10px;
+    width: calc(100% - 20px);
+    height: auto;
+    background: #444444;
+    border: 2px solid #000000;
+    border-radius: 10px;
+}
+.profile-name {
+    position: relative;
+    margin: 2px 0px 0px 10px;
+    font-size: 24px;
+    color: #ffffff;
+}
+.profile-version {
+    position: relative;
+    margin: -6px 0px 0px 10px;
+    font-size: 16px;
+    color: #ffffff;
+}
+.profile-description {
+    position: relative;
+    margin: -4px 0px 4px 10px;
+    font-size: 16px;
+    color: #bbbbbb;
+}
+.profile-buttons {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 140px;
+}
+.profile-buttons button {
+    position: relative;
+    margin: 5px auto 5px auto;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    color: #ffffff;
+}
+#new-profile {
+    position: relative;
+    margin: 10px auto 10px auto;
+    width: 40px;
+    height: 40px;
+    display: block;
+    color: #ffffff;
+}
