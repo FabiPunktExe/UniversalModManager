@@ -28,18 +28,24 @@ module.exports.loadMods = (mods, callback) => {
     })
 }
 
+module.exports.installMod = (mod, mods, installedMods) => {
+    mod = this.getModById(mod, mods)
+    if (!mod) return
+    mod.dependencies.forEach(dependency => this.installMod(dependency, mods, installedMods))
+    const modFile = mod.id + ".jar"
+    if (existsSync(join(modsdir(), modFile))) {
+        installedMods = installedMods.filter(mod => mod != modFile)
+    } else {
+        const cacheFile = join(modscache(), modFile)
+        if (!existsSync(cacheFile)) execSync("curl -o \"" + cacheFile + "\" \"" + mod.url + "\"")
+        copyFileSync(cacheFile, join(modsdir(), modFile))
+        installedMods = installedMods.filter(mod => mod != modFile)
+    }
+    return installedMods
+}
+
 module.exports.installMods = (profile, mods) => {
-    const installedMods = readdirSync(modsdir())
-    profile.mods.forEach((mod) => {
-        mod = this.getModById(mod, mods)
-        const modFile = mod.url.substring(mod.url.lastIndexOf("/") + 1)
-        if (modFile in installedMods) installedMods.splice(installedMods.indexOf(mod.id))
-        else {
-            const cacheFile = join(modscache(), modFile)
-            if (!existsSync(cacheFile)) execSync("curl -o \"" + cacheFile + "\" \"" + mod.url + "\"")
-            copyFileSync(cacheFile, join(modsdir(), modFile))
-            installedMods.splice(installedMods.indexOf(mod.id))
-        }
-    })
+    var installedMods = readdirSync(modsdir())
+    profile.mods.forEach(mod => installedMods = this.installMod(mod, mods, installedMods))
     installedMods.forEach(mod => unlinkSync(join(modsdir(), mod)))
 }
