@@ -1,5 +1,5 @@
 // NAME;ID;URL;VERSION1,VERSION2;DEPENDENCY1,DEPENDENCY2;DESCRIPTION;TAG1,TAG2,TAG3
-StupsiMod;stupsimod-0;http://diruptio.de/stupsimod/download/stupsimod-0.2.5.jar;fabric-1.19.3;Ein toller Minecraft client;client
+StupsiMod;stupsimod-0;http://diruptio.de/stupsimod/download/stupsimod-0.2.5.jar;fabric-1.19.3;fabric-api-1.19.3;Ein toller Minecraft client;client
 OptiFine;optifine-1.14.4;https://optifine.net/downloadx?f=OptiFine_1.14.4_HD_U_G5.jar&x=73b2705464d3398653afd2cc8e35565b;forge-1.14.4;;OptiFine is a Minecraft optimization mod. It allows Minecraft to run faster and look better with full support for HD textures and many configuration options.;graphics
 OptiFine;optifine-1.15.2;https://optifine.net/downloadx?f=OptiFine_1.15.2_HD_U_G6.jar&x=73b2705464d3398653afd2cc8e35565b;forge-1.15.2;;OptiFine is a Minecraft optimization mod. It allows Minecraft to run faster and look better with full support for HD textures and many configuration options.;graphics
 OptiFine;optifine-1.16.1;https://optifine.net/downloadx?f=OptiFine_1.16.1_HD_U_G2.jar&x=73b2705464d3398653afd2cc8e35565b;forge-1.16.1;;OptiFine is a Minecraft optimization mod. It allows Minecraft to run faster and look better with full support for HD textures and many configuration options.;graphics
