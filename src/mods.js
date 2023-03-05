@@ -14,14 +14,18 @@ module.exports.loadMods = (mods, callback) => {
         const lines = body.split("\n")
         lines.forEach(line => {
             if (!line.startsWith("//")) {
-                const data = line.split(";")
-                mods.push({
-                    name: data[0],
-                    id: data[1],
-                    url: data[2],
-                    versions: data[3] == "" ? [] : data[3].split(","),
-                    dependencies: data[4] == "" ? [] : data[4].split(",")
-                })
+                if (line != "") {
+                    const data = line.split(";")
+                    mods.push({
+                        name: data[0],
+                        id: data[1],
+                        url: data[2],
+                        versions: data[3] == "" ? [] : data[3].split(","),
+                        dependencies: data[4] == "" ? [] : data[4].split(","),
+                        description: data[5],
+                        tags: data[6] == "" ? [] : data[6].split(",")
+                    })
+                }
             }
         })
         callback()

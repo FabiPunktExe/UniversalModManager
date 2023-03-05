@@ -18,7 +18,7 @@ function play(id, window, mods) {
             const launcherProfiles = JSON.parse(readFileSync(join(mcdir(), "launcher_profiles.json")))
             launcherProfiles.keepLauncherOpen = false
             launcherProfiles.profiles.umm = {
-                created: "3000-01-01T00:00:00.000Z",
+                created: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
                 icon: "Gold_Block",
                 lastUsed: "3000-01-01T00:00:00.000Z",
                 lastVersionId: version.mcid,
@@ -43,9 +43,16 @@ function play(id, window, mods) {
 }
 
 function edit(id, window) {
+    const profile = profiles.find(profile => profile.id == id)
     window.webContents.send("page", "edit")
-    window.webContents.send("edit", id, true)
-    window.webContents.send("loadMods", mods)
+    window.webContents.send("edit", profile)
+    window.webContents.send("loadMods", mods.filter(mod => {
+        for (const version of mod.versions) {
+            if (version == profile.version) return true
+        }
+        return false
+    }))
+    window.webContents.send("editButton", id, true)
 }
 
 function createWindow(callback) {
@@ -86,6 +93,8 @@ app.on("ready", () => {
             createWindow((window) => {
                 ipcMain.on("play", (event, id) => play(id, window, mods))
                 ipcMain.on("edit", (event, id) => edit(id, window, mods))
+                //ipcMain.on("new", (event) => window.webContents.send("page", "edit"))
+                ipcMain.on("back", (event) => window.webContents.send("page", "profiles"))
                 window.webContents.send("page", "profiles")
                 profiles.forEach(profile => {
                     const version = versions.find(ver => ver.id == profile.version)

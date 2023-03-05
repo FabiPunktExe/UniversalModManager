@@ -8,38 +8,12 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="profiles.css">
+        <link rel="stylesheet" href="edit.css">
     </head>
     <body>
         <div id="profiles-page">
             <div class="profiles-header"><div class="profile-text">Profile</div></div>
             <div id="profiles">
-                <div class="profile">
-                    <div class="profile-name">Name</div>
-                    <div class="profile-version">Fabric 1.19.3</div>
-                    <div class="profile-description">Tolle beschreibung</div>
-                    <div class="profile-buttons">
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
-                            </svg>
-                        </button>
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                            </svg>
-                        </button>
-                        <button>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="profile">
-                    <div class="profile-name">Name2</div>
-                    <div class="profile-version">Fabric 1.19.3</div>
-                    <div class="profile-description">Tolle beschreibung 2</div>
-                </div>
                 <button id="new-profile">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
@@ -48,16 +22,39 @@
             </div>
         </div>
         <div id="edit-page">
+            <button id="back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                </svg>
+            </button>
+            <div class="mods-header"><div class="mods-text">Mods</div></div>
+            <div id="mods">
+                <div class="search-bar">
+                    <input type="text" id="search" placeholder="Suchen">
+                    <button type="submit" id="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="mod" draggable="true">
+                    <div class="mod-name">Optifein</div>
+                    <div class="mod-description">Optifein is ne tolle mod</div>
+                    <div class="mod-tags">graphics</div>
+                </div>
+            </div>
+            <div class="edit-header"><div class="edit-text">Bearbeiten</div></div>
         </div>
-
     </body>
 </html>
 <script>
+    var editingProfile
     function showPage(page) {
         document.getElementById("profiles-page").style.visibility = page == "profiles" ? "visible" : "hidden"
         document.getElementById("edit-page").style.visibility = page == "edit" ? "visible" : "hidden"
     }
     document.getElementById("new-profile").onclick = () => electronAPI.send("new")
+    document.getElementById("back").onclick = () => electronAPI.send("back")
     function addProfile(data) {
         const profiles = document.getElementById("profiles")
         const profile = document.createElement("div")
@@ -81,8 +78,8 @@
                              + '<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>'
                              + '</svg>';
         playButton.onclick = () => {
-            document.getElementById("play:" + id).disabled = true
-            electronAPI.send("play", data.id);
+            playButton.disabled = true
+            electronAPI.send("play", data.id)
         }
         playButton.id = "play:" + data.id
         buttons.appendChild(playButton)
@@ -91,8 +88,8 @@
                              + '<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>'
                              + '</svg>';
         editButton.onclick = () => {
-            document.getElementById("edit:" + id).disabled = true
-            electronAPI.send("edit", data.id);
+            editButton.disabled = true
+            electronAPI.send("edit", data.id)
         }
         editButton.id = "edit:" + data.id
         buttons.appendChild(editButton)
@@ -101,22 +98,44 @@
                                + '<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>'
                                + '</svg>';
         deleteButton.onclick = () => {
-            document.getElementById("delete:" + id).disabled = true
-            electronAPI.send("delete", data.id);
+            deleteButton.disabled = true
+            electronAPI.send("delete", data.id)
         }
         deleteButton.id = "delete:" + data.id
         buttons.appendChild(deleteButton)
         profile.appendChild(buttons)
         profiles.insertBefore(profile, document.getElementById("new-profile"))
     }
+    function loadMods(mods) {
+        const modsDiv = document.getElementById("mods")
+        modsDiv.innerHTML = ""
+        mods.forEach(data => {
+            const mod = document.createElement("div")
+            mod.className = "mod"
+            mod.draggable = true
+            const name = document.createElement("div")
+            name.innerText = data.name
+            name.className = "mod-name"
+            mod.appendChild(name)
+            const description = document.createElement("div")
+            description.innerText = data.description
+            description.className = "mod-description"
+            mod.appendChild(description)
+            const tags = document.createElement("div")
+            tags.innerText = data.tags.join(" ")
+            tags.className = "mod-tags"
+            mod.appendChild(tags)
+            modsDiv.appendChild(mod)
+        });
+    }
     electronAPI.addCallback("page", (event, page) => {
-        console.log(page)
         showPage(page)
     })
     electronAPI.addCallback("addProfile", (event, data) => {
-        console.log(data)
         addProfile(data)
     })
     electronAPI.addCallback("playButton", (event, id, active) => document.getElementById("play:" + id).disabled = !active)
+    electronAPI.addCallback("editButton", (event, id, active) => document.getElementById("edit:" + id).disabled = !active)
+    electronAPI.addCallback("edit", (event, profile) => editingProfile = profile)
     electronAPI.addCallback("loadMods", (event, mods) => loadMods(mods))
 </script>
