@@ -14,8 +14,8 @@
         <div id="profiles-page">
             <div class="profiles-header"><div class="profile-text">Profile</div></div>
             <div id="profiles">
-                <button id="new-profile">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <button id="new-profile" onclick="electronAPI.send('new')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                     </svg>
                 </button>
@@ -28,7 +28,7 @@
                 </svg>
             </button>
             <div class="mods-header"><div class="mods-text">Mods</div></div>
-            <div id="mods">
+            <div id="mods" ondrop="drop(event)" ondragover="dragOver(event)">
                 <div class="search-bar">
                     <input type="text" id="search" placeholder="Suchen">
                     <button type="submit" id="search-button">
@@ -37,13 +37,14 @@
                         </svg>
                     </button>
                 </div>
-                <div class="mod" draggable="true">
-                    <div class="mod-name">Optifein</div>
-                    <div class="mod-description">Optifein is ne tolle mod</div>
-                    <div class="mod-tags">graphics</div>
-                </div>
             </div>
             <div class="edit-header"><div class="edit-text">Bearbeiten</div></div>
+            <div class="edit">
+                <input id="edit-name" onchange="electronAPI.send('setName', {id: editingProfile.id, name: document.getElementById('edit-name').value})" placeholder="Name">
+                <select id="edit-version" onchange="setVersion()"></select>
+                <textarea id="edit-description" onchange="electronAPI.send('setDescription', {id: editingProfile.id, description: document.getElementById('edit-description').value})" placeholder="Beschreibung"></textarea>
+                <div id="selected-mods" ondrop="drop(event)" ondragover="dragOver(event)"></div>
+            </div>
         </div>
     </body>
 </html>
@@ -55,87 +56,132 @@
     }
     document.getElementById("new-profile").onclick = () => electronAPI.send("new")
     document.getElementById("back").onclick = () => electronAPI.send("back")
-    function addProfile(data) {
+    function loadProfiles(data) {
         const profiles = document.getElementById("profiles")
-        const profile = document.createElement("div")
-        profile.className = "profile"
-        const name = document.createElement("div")
-        name.innerText = data.name
-        name.className = "profile-name"
-        profile.appendChild(name)
-        const version = document.createElement("div")
-        version.innerText = data.version
-        version.className = "profile-version"
-        profile.appendChild(version)
-        const description = document.createElement("div")
-        description.innerText = data.description
-        description.className = "profile-description"
-        profile.appendChild(description)
-        const buttons = document.createElement("div")
-        buttons.className = "profile-buttons"
-        const playButton = document.createElement("button")
-        playButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">'
-                             + '<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>'
-                             + '</svg>';
-        playButton.onclick = () => {
-            playButton.disabled = true
-            electronAPI.send("play", data.id)
-        }
-        playButton.id = "play:" + data.id
-        buttons.appendChild(playButton)
-        const editButton = document.createElement("button")
-        editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">'
-                             + '<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>'
-                             + '</svg>';
-        editButton.onclick = () => {
-            editButton.disabled = true
-            electronAPI.send("edit", data.id)
-        }
-        editButton.id = "edit:" + data.id
-        buttons.appendChild(editButton)
-        const deleteButton = document.createElement("button")
-        deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">'
-                               + '<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>'
-                               + '</svg>';
-        deleteButton.onclick = () => {
-            deleteButton.disabled = true
-            electronAPI.send("delete", data.id)
-        }
-        deleteButton.id = "delete:" + data.id
-        buttons.appendChild(deleteButton)
-        profile.appendChild(buttons)
-        profiles.insertBefore(profile, document.getElementById("new-profile"))
+        Array.from(profiles.children).filter(child => child.id != "new-profile").forEach(child => child.remove())
+        data.forEach(profile => {
+            const div = document.createElement("div")
+            div.className = "profile"
+            const name = document.createElement("div")
+            name.innerText = profile.name
+            name.className = "profile-name"
+            div.appendChild(name)
+            const version = document.createElement("div")
+            version.innerText = profile.version
+            version.className = "profile-version"
+            div.appendChild(version)
+            const description = document.createElement("div")
+            description.innerText = profile.description
+            description.className = "profile-description"
+            div.appendChild(description)
+            const buttons = document.createElement("div")
+            buttons.className = "profile-buttons"
+            const playButton = document.createElement("button")
+            playButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">'
+                                 + '<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>'
+                                 + '</svg>';
+            playButton.onclick = () => {
+                playButton.disabled = true
+                electronAPI.send("play", profile.id)
+            }
+            playButton.id = "play:" + profile.id
+            buttons.appendChild(playButton)
+            const editButton = document.createElement("button")
+            editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">'
+                                 + '<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>'
+                                 + '</svg>';
+            editButton.onclick = () => {
+                editButton.disabled = true
+                electronAPI.send("edit", profile.id)
+            }
+            editButton.id = "edit:" + profile.id
+            buttons.appendChild(editButton)
+            const copyButton = document.createElement("button")
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">'
+                                 + '<path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>'
+                                 + '</svg>';
+            copyButton.onclick = () => electronAPI.send("copy", profile.id)
+            buttons.appendChild(copyButton)
+            const deleteButton = document.createElement("button")
+            deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">'
+                                   + '<path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>'
+                                   + '</svg>';
+            deleteButton.onclick = () => electronAPI.send("delete", profile.id)
+            buttons.appendChild(deleteButton)
+            div.appendChild(buttons)
+            profiles.insertBefore(div, document.getElementById("new-profile"))
+        })
     }
-    function loadMods(mods) {
-        const modsDiv = document.getElementById("mods")
-        modsDiv.innerHTML = ""
+    function loadVersions(versions) {
+        document.getElementById("edit-version").innerHTML = ""
+        versions.forEach(data => {
+            const version = document.createElement("option")
+            version.value = data.id
+            version.innerText = data.name
+            document.getElementById("edit-version").appendChild(version)
+        });
+    }
+    function loadMods(div, mods) {
+        Array.from(div.children).filter(child => child.className != "search-bar").forEach(child => child.remove())
         mods.forEach(data => {
             const mod = document.createElement("div")
             mod.className = "mod"
+            mod.id = "mod-" + data.id
             mod.draggable = true
+            mod.ondragstart = event => {
+                event.dataTransfer.setData("id", data.id)
+                event.dataTransfer.setData("text", "mod-" + data.id)
+            }
             const name = document.createElement("div")
             name.innerText = data.name
             name.className = "mod-name"
             mod.appendChild(name)
             const description = document.createElement("div")
-            description.innerText = data.description
+            description.innerText = data.description.replace("\\n", "<br>")
             description.className = "mod-description"
             mod.appendChild(description)
             const tags = document.createElement("div")
             tags.innerText = data.tags.join(" ")
             tags.className = "mod-tags"
             mod.appendChild(tags)
-            modsDiv.appendChild(mod)
+            div.appendChild(mod)
         });
+    }
+    function dragOver(event) {
+        event.preventDefault()
+    }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+        electronAPI.send("setMods", {id: editingProfile.id, mods: Array.from(document.getElementById("selected-mods").children).map(child => child.id.replace("mod-", ""))})
+    }
+    function setVersion() {
+        version = document.getElementById("edit-version")
+        const children = Array.from(version.children)
+        versionId = children[version.options.selectedIndex].value
+        electronAPI.send("setVersion", {id: editingProfile.id, version: versionId})
     }
     electronAPI.addCallback("page", (event, page) => {
         showPage(page)
     })
-    electronAPI.addCallback("addProfile", (event, data) => {
-        addProfile(data)
+    electronAPI.addCallback("loadProfiles", (event, data) => {
+        loadProfiles(data)
     })
     electronAPI.addCallback("playButton", (event, id, active) => document.getElementById("play:" + id).disabled = !active)
     electronAPI.addCallback("editButton", (event, id, active) => document.getElementById("edit:" + id).disabled = !active)
-    electronAPI.addCallback("edit", (event, profile) => editingProfile = profile)
-    electronAPI.addCallback("loadMods", (event, mods) => loadMods(mods))
+    electronAPI.addCallback("edit", (event, profile) => {
+        editingProfile = profile
+        document.getElementById("edit-name").value = profile.name
+        const version = document.getElementById("edit-version")
+        var index
+        version.childNodes.forEach((child, i) => {
+            if (child.value == profile.version) index = i
+        })
+        version.options.selectedIndex = index
+        document.getElementById("edit-description").value = profile.description
+    })
+    electronAPI.addCallback("loadVersions", (event, versions) => loadVersions(versions))
+    electronAPI.addCallback("loadMods", (event, mods) => loadMods(document.getElementById("mods"), mods))
+    electronAPI.addCallback("loadSelectedMods", (event, mods) => loadMods(document.getElementById("selected-mods"), mods))
 </script>
