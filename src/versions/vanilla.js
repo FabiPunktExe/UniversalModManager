@@ -33,7 +33,7 @@ function registerVanillaVersion(versions, version) {
         mcid: version,
         isInstalled: () => existsSync(join(versiondir(), version)),
         install: (callback) => {
-            getVanillaJson(version, json => writeJson(json, json.id, callback))
+            this.getVanillaJson(version, json => writeJson(json, json.id, callback))
         }
     })
 }

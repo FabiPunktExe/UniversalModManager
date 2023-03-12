@@ -2,43 +2,47 @@ const { spawnSync } = require("child_process")
 const { app, BrowserWindow, ipcMain, dialog } = require("electron")
 const { readFileSync, writeFileSync } = require("fs")
 const { join } = require("path")
-const { mcdir } = require("./mcutil")
+const { mcdir, dir } = require("./mcutil")
 const versionsLib = require("./versions/versions")
 const { installMods, loadMods } = require("./mods")
 const moment = require("moment/moment")
+const { loadPublicProfiles } = require("./public_profiles")
 
-function play(id, window, mods) {
-    const profile = profiles.find(profile => profile.id == id)
+function play(data, window, mods) {
+    const id = data.id
+    const profile = (data.private ? profiles : publicProfiles).find(profile => profile.id == id)
     if (profile) {
         const version = versions.find(ver => ver.id == profile.version)
         if (version) {
-            const callback = () => window.webContents.send("playButton", id, true)
+            const callback = () => {
+                window.webContents.send("playButton", id, true)
+                installMods(profile, mods)
+                const launcherProfiles = JSON.parse(readFileSync(join(mcdir(), "launcher_profiles.json")))
+                launcherProfiles.keepLauncherOpen = false
+                launcherProfiles.profiles.umm = {
+                    created: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
+                    icon: "Gold_Block",
+                    lastUsed: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
+                    lastVersionId: version.mcid,
+                    name: "UniversalModManager",
+                    type: "custom"
+                }
+                writeFileSync(join(mcdir(), "launcher_profiles.json"), JSON.stringify(launcherProfiles))
+                switch(process.platform) {
+                    case "win32":
+                        spawnSync("taskkill", ["/F", "/IM", "Minecraft.exe", "/T"])
+                        setTimeout(() => {
+                            spawnSync("C:\\Program Files\\WindowsApps\\Microsoft.4297127D64EC6_1.1.28.0_x64__8wekyb3d8bbwe\\Minecraft.exe")
+                        }, 100)
+                        break
+                    default:
+                        spawnSync("pkill -f minecraft-launcher")
+                        setTimeout(() => spawnSync("minecraft-launcher"), 100)
+                        break
+                }
+            }
             if (version.isInstalled()) callback()
             else version.install(callback)
-            installMods(profile, mods)
-            const launcherProfiles = JSON.parse(readFileSync(join(mcdir(), "launcher_profiles.json")))
-            launcherProfiles.keepLauncherOpen = false
-            launcherProfiles.profiles.umm = {
-                created: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
-                icon: "Gold_Block",
-                lastUsed: "3000-01-01T00:00:00.000Z",
-                lastVersionId: version.mcid,
-                name: "UniversalModManager",
-                type: "custom"
-            }
-            writeFileSync(join(mcdir(), "launcher_profiles.json"), JSON.stringify(launcherProfiles))
-            switch(process.platform) {
-                case "win32":
-                    spawnSync("taskkill", ["/F", "/IM", "Minecraft.exe", "/T"])
-                    setTimeout(() => {
-                        spawnSync("C:\\Program Files\\WindowsApps\\Microsoft.4297127D64EC6_1.1.28.0_x64__8wekyb3d8bbwe\\Minecraft.exe")
-                    }, 100)
-                    break
-                default:
-                    spawnSync("pkill -f minecraft-launcher")
-                    setTimeout(() => spawnSync("minecraft-launcher"), 100)
-                    break
-            }
         }
     }
 }
@@ -51,7 +55,6 @@ function updateMods(window, profile) {
         return false
     }).filter(mod => {
         for (const selectedMod of profile.mods) {
-            console.log(mod.id + " " + selectedMod + " " + mod.id != selectedMod)
             if (mod.id == selectedMod) return false
         }
         return true
@@ -72,8 +75,9 @@ function edit(id, window) {
     window.webContents.send("editButton", id, true)
 }
 
-function updateProfiles(window) {
-    window.webContents.send("loadProfiles", profiles.map(profile => {
+function updateProfiles(window, mode) {
+    window.webContents.send("profiles", mode == "private")
+    window.webContents.send("loadProfiles", (mode == "private" ? profiles : publicProfiles).map(profile => {
         return {
             id: profile.id,
             name: profile.name,
@@ -99,7 +103,7 @@ function createWindow(callback) {
 
 function loadProfiles() {
     try {
-        const profiles = JSON.parse(readFileSync(join(__dirname, "profiles.json")))
+        const profiles = JSON.parse(readFileSync(join(dir(), "profiles.json")))
         profiles.filter(profile => "name"        in profile &&
                                    "description" in profile &&
                                    "id"          in profile &&
@@ -107,27 +111,28 @@ function loadProfiles() {
                                    "mods"        in profile)
         return profiles
     } catch (e) {
-        writeFileSync(join(__dirname, "profiles.json"), "[]")
+        writeFileSync(join(dir(), "profiles.json"), "[]")
         return loadProfiles()
     }
 }
 
 function saveProfiles() {
     try {
-        writeFileSync(join(__dirname, "profiles.json"), JSON.stringify(profiles))
+        writeFileSync(join(dir(), "profiles.json"), JSON.stringify(profiles))
     } catch (e) {}
 }
 
 const versions = []
 const profiles = loadProfiles()
+const publicProfiles = []
+loadPublicProfiles(publicProfiles, () => {})
 const mods = []
 
 app.on("ready", () => {
     versionsLib.loadVersions(versions, () => {
         loadMods(mods, () => {
-            console.log(mods)
             createWindow((window) => {
-                ipcMain.on("play", (event, id) => play(id, window, mods))
+                ipcMain.on("play", (event, data) => play(data, window, mods))
                 ipcMain.on("edit", (event, id) => edit(id, window))
                 ipcMain.on("new", event => {
                     var id = 0
@@ -158,7 +163,7 @@ app.on("ready", () => {
                     if (action == 0) {
                         profiles.splice(profiles.indexOf(profile), 1)
                         saveProfiles()
-                        updateProfiles(window)
+                        updateProfiles(window, "private")
                     }
                 })
                 ipcMain.on("copy", (event, id) => {
@@ -175,10 +180,10 @@ app.on("ready", () => {
                         mods: profile.mods.slice()
                     })
                     saveProfiles()
-                    updateProfiles(window)
+                    updateProfiles(window, "private")
                 })
                 ipcMain.on("back", event => {
-                    updateProfiles(window)
+                    updateProfiles(window, "private")
                     window.webContents.send("page", "profiles")
                 })
                 ipcMain.on("setName", (event, data) => {
@@ -212,14 +217,16 @@ app.on("ready", () => {
                     profiles.find(profile => profile.id == data.id).mods = data.mods
                     saveProfiles()
                 })
+                ipcMain.on("profiles", (event, mode) => updateProfiles(window, mode))
                 window.webContents.send("page", "profiles")
+                window.webContents.send("profiles", false)
                 window.webContents.send("loadVersions", versions.map(version => {
                     return {
                         id: version.id,
                         name: version.name
                     }
                 }))
-                updateProfiles(window)
+                updateProfiles(window, "private")
                 app.on("window-all-closed", app.quit)
             })
         })

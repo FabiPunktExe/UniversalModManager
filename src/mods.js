@@ -5,13 +5,12 @@ const { get } = require("request")
 const { modscache, modsdir } = require("./mcutil")
 
 module.exports.getModById = (id, mods) => {
-    return mods.filter(mod => mod.id == id)[0]
+    return mods.find(mod => mod.id == id)
 }
 
 function processRegister(register, mods, callback, name, description, tags) {
     if (register.length > 0) {
         const line = register[0]
-        console.log(line)
         const data = line.split(";")
         const next = (name, description, tags) => processRegister(register.slice(1), mods, callback, name, description, tags)
         if (line.startsWith("//")) next(name, description, tags)
@@ -46,41 +45,32 @@ function loadMods(url, mods, callback) {
 
 module.exports.loadMods = (mods, callback) => {
     while (mods.length) mods.splice(0, mods.length)
-    /*get("https://mrstupsi.github.io/UniversalModManager/mods.txt", {}, (error, response, body) => {
-        const lines = body.split("\n")
-        lines.forEach(line => {
-            if (!line.startsWith("//")) {
-                if (line != "") {
-                    const data = line.split(";")
-                    mods.push({
-                        name: data[0],
-                        id: data[1],
-                        url: data[2],
-                        versions: data[3] == "" ? [] : data[3].split(","),
-                        dependencies: data[4] == "" ? [] : data[4].split(","),
-                        description: data[5],
-                        tags: data[6] == "" ? [] : data[6].split(",")
-                    })
-                }
-            }
-        })
-        callback()
-    })*/
     loadMods("https://mrstupsi.github.io/UMMMods/registers.txt", mods, callback)
 }
 
+function addDependencies(selectedMods, mods) {
+    selectedMods.forEach(selectedMod => {
+        selectedMod = mods.find(mod => mod.id == selectedMod)
+        selectedMod.dependencies.forEach(dependency => {
+            selectedMods = selectedMods.concat(addDependencies([dependency], mods))
+        })
+    })
+    return selectedMods
+}
+
 module.exports.installMods = (profile, mods) => {
-    const installedMods = readdirSync(modsdir())
-    profile.mods.forEach((mod) => {
+    const files = readdirSync(modsdir())
+    addDependencies(profile.mods, mods).forEach(mod => {
         mod = this.getModById(mod, mods)
-        const modFile = mod.url.substring(mod.url.lastIndexOf("/") + 1)
-        if (modFile in installedMods) installedMods.splice(installedMods.indexOf(mod.id))
+        const modFile = mod.id + ".jar"
+        const fileIndex = files.findIndex(file => file == modFile)
+        console.log(fileIndex)
+        if (fileIndex != -1) files.splice(fileIndex, 1)
         else {
             const cacheFile = join(modscache(), modFile)
             if (!existsSync(cacheFile)) execSync("curl -o \"" + cacheFile + "\" \"" + mod.url + "\"")
             copyFileSync(cacheFile, join(modsdir(), modFile))
-            installedMods.splice(installedMods.indexOf(mod.id))
         }
     })
-    installedMods.forEach(mod => unlinkSync(join(modsdir(), mod)))
+    files.forEach(file => unlinkSync(join(modsdir(), file)))
 }

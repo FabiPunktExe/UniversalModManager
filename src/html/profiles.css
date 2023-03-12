@@ -1,10 +1,10 @@
 #profiles-page {
-    visibility: hidden;
+    visibility: visible;
 }
-.profiles-header {
+#private-profiles-header {
     position: absolute;
     margin: 20px 30% 10px 30%;
-    width: 40%;
+    width: calc(10% - 5px);
     height: 50px;
     background: #555555;
     border: 2px solid #000000;
@@ -12,12 +12,39 @@
     border-radius: 10px;
     border-bottom-left-radius: 0%;
     border-bottom-right-radius: 0%;
+    transition: 0.4s;
 }
-.profile-text {
+#private-profiles-header:disabled {
+    position: absolute;
+    margin: 20px 30% 10px 30%;
+    width: calc(30% - 5px);
+}
+#public-profiles-header {
+    position: absolute;
+    margin: 20px 30% 10px calc(60% + 5px);
+    width: calc(10% - 5px);
+    height: 50px;
+    background: #555555;
+    border: 2px solid #000000;
+    border-bottom: 1px solid #000000;
+    border-radius: 10px;
+    border-bottom-left-radius: 0%;
+    border-bottom-right-radius: 0%;
+    transition: 0.4s;
+}
+#public-profiles-header:disabled {
+    position: absolute;
+    margin: 20px 30% 10px calc(40% + 5px);
+    width: calc(30% - 5px);
+}
+button .profile-text {
     color: #ffffff;
-    font-size: 30px;
+    font-size: 20px;
     margin: auto;
     text-align: center;
+}
+button:disabled .profile-text {
+    font-size: 30px;
 }
 #profiles {
     position: absolute;
