@@ -20,9 +20,8 @@ function play(data, window, mods) {
                 const launcherProfiles = JSON.parse(readFileSync(join(mcdir(), "launcher_profiles.json")))
                 launcherProfiles.keepLauncherOpen = false
                 launcherProfiles.profiles.umm = {
-                    created: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
                     icon: "Gold_Block",
-                    lastUsed: moment().format("yyyy-MM-ddThh:mm:ss.000Z"),
+                    lastUsed: moment().format(),
                     lastVersionId: version.mcid,
                     name: "UniversalModManager",
                     type: "custom"
